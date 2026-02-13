@@ -2,9 +2,12 @@ from django.conf import settings
 from django.db import models
 from courses.models import Course
 
+User = settings.AUTH_USER_MODEL
+
+
 class Enrollment(models.Model):
     student = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="enrollments"
     )
@@ -14,9 +17,10 @@ class Enrollment(models.Model):
         related_name="enrollments"
     )
     enrolled_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ("student", "course")  # 🔥 prevents duplicates
+        unique_together = ('student', 'course')
 
     def __str__(self):
-        return f"{self.student} → {self.course}"
+        return f"{self.student} enrolled in {self.course}"
